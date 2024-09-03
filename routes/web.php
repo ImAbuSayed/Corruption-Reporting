@@ -7,6 +7,7 @@ use App\Livewire\Report\CreateReport as LWCreateReport;
 use App\Livewire\Report\EditReport as LWEditReport;
 use App\Livewire\Report\ListReports as LWListReports;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
 
 Route::get('/public-reports', PublicReports::class)->name('public.reports');
 
@@ -29,3 +30,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/{reportId}/edit', LWEditReport::class)->name('edit.report');
     Route::get('/reports', LWListReports::class)->name('reports.index');
 });
+
+Route::get('/reports/{slug}', [ReportController::class, 'show'])->name('reports.show');

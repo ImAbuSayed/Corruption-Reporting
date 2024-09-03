@@ -12,7 +12,12 @@ class PublicReports extends Component
 
     public function render()
     {
-        $reports = Report::paginate(5); // Use pagination here
-        return view('livewire.public-reports', ['reports' => $reports]);
+        $reports = Report::where('approval_status', 'approved')
+            ->latest()
+            ->paginate(10);
+
+        $categories = Report::distinct('category')->pluck('category');
+
+        return view('livewire.public-reports', compact('reports', 'categories'));
     }
 }
