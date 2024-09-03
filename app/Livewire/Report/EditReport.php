@@ -28,6 +28,10 @@ class EditReport extends Component
 
     public $thumbnail;
 
+    public $existingFiles = [];
+
+    public $filesToDelete = [];
+
     protected $rules = [
         'title' => 'required|string|max:255',
         'description' => 'required|string',
@@ -46,9 +50,18 @@ class EditReport extends Component
             $this->status = $report->status;
             $this->other_status = $report->other_status;
             $this->existingThumbnail = $report->thumbnail;
+            $this->existingFiles = $report->files->toArray();
         } else {
             abort(403);
         }
+    }
+
+    public function deleteFile($fileId)
+    {
+        $this->filesToDelete[] = $fileId;
+        $this->existingFiles = array_filter($this->existingFiles, function ($file) use ($fileId) {
+            return $file['id'] != $fileId;
+        });
     }
 
     public function save()
@@ -62,6 +75,16 @@ class EditReport extends Component
             'other_status' => $this->other_status,
         ]);
 
+        // Handle file deletions
+        foreach ($this->filesToDelete as $fileId) {
+            $file = $report->files()->find($fileId);
+            if ($file) {
+                Storage::disk('public')->delete($file->path);
+                $file->delete();
+            }
+        }
+
+        // Handle new file uploads
         if ($this->files) {
             foreach ($this->files as $file) {
                 $filePath = $file->store('files', 'public');
