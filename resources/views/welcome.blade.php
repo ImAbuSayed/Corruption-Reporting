@@ -71,7 +71,7 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Project Details</h2>
                 <p class="text-gray-600 mb-2">This platform is developed to facilitate the easy reporting and management of corruption cases.</p>
                 <p class="text-gray-600 mb-4">Check out the project repository on GitHub:</p>
-                <a href="https://github.com/YourGithubUsername/YourProjectRepo" class="text-blue-500 hover:underline nav-link" target="_blank">
+                <a href="https://github.com/ImAbuSayed/corruption-reporting" class="text-blue-500 hover:underline nav-link" target="_blank">
                     <i class="fab fa-github"></i> GitHub Repository
                 </a>
             </div>

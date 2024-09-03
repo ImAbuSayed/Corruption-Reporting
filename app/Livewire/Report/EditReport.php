@@ -2,17 +2,31 @@
 
 namespace App\Livewire\Report;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class EditReport extends Component
 {
     use WithFileUploads;
 
-    public $reportId, $title, $description, $files = [], $status, $other_status, $thumbnail;
+    public $existingThumbnail;
+
+    public $reportId;
+
+    public $title;
+
+    public $description;
+
+    public $files = [];
+
+    public $status;
+
+    public $other_status;
+
+    public $thumbnail;
 
     protected $rules = [
         'title' => 'required|string|max:255',
@@ -31,6 +45,7 @@ class EditReport extends Component
             $this->description = $report->description;
             $this->status = $report->status;
             $this->other_status = $report->other_status;
+            $this->existingThumbnail = $report->thumbnail;
         } else {
             abort(403);
         }
@@ -55,11 +70,16 @@ class EditReport extends Component
         }
 
         if ($this->thumbnail) {
+            // Delete the old thumbnail if it exists
+            if ($report->thumbnail) {
+                Storage::disk('public')->delete($report->thumbnail);
+            }
             $thumbnailPath = $this->thumbnail->store('thumbnails', 'public');
             $report->update(['thumbnail' => $thumbnailPath]);
         }
 
         session()->flash('message', 'Report updated successfully.');
+
         return redirect()->route('reports.index');
     }
 
